@@ -49,7 +49,7 @@ Module.register("MMM-LICE", {
         wrapper.style.maxWidth = this.config.maxWidth;
 
         if (!this.loaded) {
-            wrapper.innerHTML = this.translate("Show me the money . . .");
+            wrapper.innerHTML = this.translate("Loading....");
             wrapper.classList.add("bright", "light", "small");
             return wrapper;
         }
@@ -69,37 +69,44 @@ Module.register("MMM-LICE", {
 
 
         // timestamp
-        var timestamp = document.createElement("div");
+        /* var timestamp = document.createElement("div");
         timestamp.classList.add("xsmall", "bright", "timestamp");
         timestamp.innerHTML = "Rate as of " + moment.unix(LICE.timestamp).format('h:mm a') + " today";
         wrapper.appendChild(timestamp);
-
+		*/
 
         // source currency
-        var source = document.createElement("div");
+        /* var source = document.createElement("div");
         source.classList.add("xsmall", "bright", "source");
         source.innerHTML = "Source Currency = " + this.config.source;
         wrapper.appendChild(source);
-		
+		*/
 		
 		// this gets the key from the key/pair of the element (hasOwnProperty)
 		for (var Key in LICE.quotes) {
-		if (LICE.quotes.hasOwnProperty(Key)) {
+
+			if (LICE.quotes.hasOwnProperty(Key)) {
 	
+				//// Learned this on jsfiddle. HOORAY!
+				//// This dynamically creates the div/tags for each element of LICE.quotes
+				var symbols = LICE.quotes;
+				for (var c in symbols) {
 		
-	//// Learned this on jsfiddle. HOORAY!
-	//// This dynamically creates the div/tags for each element of LICE.quotes
-		var symbols = LICE.quotes;
-		for (var c in symbols) {
-		
-			var newElement = document.createElement("div");
-			newElement.classList.add("xsmall", "bright", "symbol");
-			newElement.innerHTML += Key + ' = '+ LICE.quotes[Key]; // + " = " + symbols[c];
+					var curr = LICE.quotes[Key];
+					var rruc = 1/LICE.quotes[Key];
+
+					var newElement = document.createElement("div");
+					newElement.classList.add("xsmall", "bright", "symbol");
+					newElement.innerHTML += "1 " + Key.slice(0,3) + ' = '+ curr.toFixed(2) + " " + Key.slice(3,6); // + " = " + symbols[c];
+					newElement.innerHTML += ", ";
+					newElement.innerHTML += "1 " + Key.slice(3,6) + ' = '+ rruc.toFixed(2) + " " + Key.slice(0,3); // + " = " + symbols[c];
+					newElement.innerHTML += " (Updated: " + moment.unix(LICE.timestamp).format('h:mm a') + ")";
+
+				}
 			}
-		}
 			wrapper.appendChild(newElement);
 			
-	} // <-- closes key/pair loop
+		} // <-- closes key/pair loop
 		
         return wrapper;
 		
